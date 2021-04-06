@@ -143,8 +143,8 @@ void RayTracer::trace()
 	GLuint tr_near = tracer_program.get_uniform("near");
 
 	// Initialize uniforms for the scene
-	mvl::Vector<GLfloat, 3> eye{0, 0, -3};
-	mvl::Vector<GLfloat, 3> center{0, 0, 0};
+	mvl::Vector<GLfloat, 3> eye{1.5, 0, -3};
+	mvl::Vector<GLfloat, 3> center{0, -2, 0};
 	mvl::Vector<GLfloat, 3> up{0, 1, 0};
 	mvl::Vector<GLfloat, 2> screen_size{2, 2};
 	GLfloat near = 1;

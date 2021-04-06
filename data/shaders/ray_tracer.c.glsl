@@ -26,8 +26,8 @@ const int TREE_SIZE = (1 << (TRACE_DEPTH+1))-1;
 const int SUBTREE_SIZE = (1 << TRACE_DEPTH)-1;
 
 // Subpixel sampling parameters
-const int SUPERSAMPLE_X_COUNT = 2;
-const int SUPERSAMPLE_Y_COUNT = 2;
+const int SUPERSAMPLE_X_COUNT = 1;
+const int SUPERSAMPLE_Y_COUNT = 1;
 const int SUPERSAMPLE_COUNT = SUPERSAMPLE_X_COUNT * SUPERSAMPLE_Y_COUNT;
 
 // Index of refraction outside objects
@@ -101,9 +101,9 @@ struct Plane
 
 /*	----- Global Arrays -----	*/
 
-Light light_sources[1];
-Sphere spheres[4];
-Plane planes[6];
+Light light_sources[2];
+Sphere spheres[10];
+Plane planes[1];
 
 
 /*	----- Intersection Methods -----	*/
@@ -496,55 +496,48 @@ void main()
 	light_sources[0].position = vec3(0, 3.5, 0);
 	light_sources[0].color = vec4(1,1,1,1);
 
+	light_sources[1].position = vec3(3, 1, 2);
+	light_sources[1].color = vec4(1,1,1,1);
+
 	/* Build spheres */
-	spheres[0].center = vec3(0.5,0,1);
-	spheres[0].radius = 0.4;
+
+	float radius = 0.5;
+	float spacing = 2.1 * radius;
+
+	spheres[0].center = vec3(0,1.6*radius-1,0);
+	spheres[0].radius = radius;
 	spheres[0].material = generate_std_material(vec4(1,0,0,1));
 	spheres[0].material.refractive = true;
-	spheres[0].material.index_of_refraction = 1.52;
+	spheres[0].material.index_of_refraction = 1.53;
 
-	spheres[1].center = vec3(-2.5,2,1);
-	spheres[1].radius = 1.2;
-	spheres[1].material = generate_std_material(vec4(0,1,0,1));
-	spheres[1].material.reflective = true;
-	spheres[1].material.k_reflect = 0.6;
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			spheres[2*i+j+1].center = vec3(spacing * (i-0.5), -1, spacing * (j-0.5));
+			spheres[2*i+j+1].radius = radius;
+			spheres[2*i+j+1].material = generate_std_material(vec4(1,0,0,1));
+			spheres[2*i+j+1].material.refractive = true;
+			spheres[2*i+j+1].material.index_of_refraction = 1.53;
+		}
+	}
 
-	spheres[2].center = vec3(-2,-0.5,4);
-	spheres[2].radius = 1;
-	spheres[2].material = generate_std_material(vec4(0.5,0,0.5,1));
-	spheres[2].material.reflective = true;
-	spheres[2].material.k_reflect = 0.8;
-
-	spheres[3].center = vec3(1.3, 2.3, 2);
-	spheres[3].radius = 0.6;
-	spheres[3].material = generate_std_material(vec4(0,1,1,1));
-	spheres[3].material.refractive = true;
-	spheres[3].material.index_of_refraction = 1.33;
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			spheres[2*i+j+5].center = vec3(2*spacing * (i-0.5), -1-1.6*radius, 2*spacing * (j-0.5));
+			spheres[2*i+j+5].radius = radius;
+			spheres[2*i+j+5].material = generate_std_material(vec4(1,0,0,1));
+			spheres[2*i+j+5].material.refractive = true;
+			spheres[2*i+j+5].material.index_of_refraction = 1.53;
+		}
+	}
 
 	/* Build planes as a stage */
-	planes[0].point = vec3(0, -1.5, 0);
+	planes[0].point = vec3(0, -3, 0);
 	planes[0].n = vec3(0, 1, 0);
-	planes[0].material = generate_std_material(vec4(0,0,1,1));
-
-	planes[1].point = vec3(-3, 0, 0);
-	planes[1].n = vec3(1, 0, 0);
-	planes[1].material = generate_std_material(vec4(0.5,0.25,0.25,1));
-
-	planes[2].point = vec3(3, 0, 0);
-	planes[2].n = vec3(-1, 0, 0);
-	planes[2].material = generate_std_material(vec4(0.5,0.25,0.25,1));
-
-	planes[3].point = vec3(0, 4, 0);
-	planes[3].n = vec3(0, -1, 0);
-	planes[3].material = generate_std_material(vec4(0.25,0.25,0.25,1));
-
-	planes[4].point = vec3(0, 0, 5);
-	planes[4].n = vec3(0, 0, -1);
-	planes[4].material = generate_std_material(vec4(0.5,0.5,0.5,1));
-
-	planes[5].point = vec3(0,0,-7);
-	planes[5].n = vec3(0,0,1);
-	planes[5].material = generate_std_material(vec4(0,1,1,1));
+	planes[0].material = generate_std_material(vec4(0.25,1,0,1));
 
 	/*	----- Sampling -----	*/
 	vec3 rays[SUPERSAMPLE_COUNT] = get_ray_subpixel_sampling(pixel);

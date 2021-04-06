@@ -74,3 +74,5 @@ iterations are often done. I've opted for readable and easily modifyable code in
 There are also some artefacts / glitches. Intersections of multiple objects often leave jaggedness,
 even with supersampling. Overlapping objects with the camera, extreme parameters, etc. may also
 cause errors.
+
+__WARNING: RUNNING WITH TOO MANY OBJECTS / LARGE SAMPLING / DEEP TRACING MAY CAUSE CRASHES!__
